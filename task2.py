@@ -7,7 +7,7 @@ def generator_numbers(text: str) -> Generator[float, None, None]:
     """
     Функція generator_numbers(text: str) знаходить по патерну всі дійсні числа у вхідному рядку text та повертає їх як генератор.
     """
-    pattern = r'(?<=\s)\d+(?:\.\d+)?(?=\s)'
+    pattern = r'(?<= )\d+(?:\.\d+)?(?= )'
     for match in re.finditer(pattern, text): 
         yield float(match.group(0)) # yield використовується для створення генератора, який повертає знайдені числа по одному за раз. повертаэмо їх як float для подальших обчислень.
 
