@@ -10,13 +10,13 @@ def input_error(func):
     def inner(*args, **kwargs):
         try:
             return func(*args, **kwargs)
-        except ValueError as e: # Обробка помилки ValueError (наприклад, коли введені некоректні дані для імені або телефону)
-            return str(e) if str(e) else"❌ Give me name and phone please"
-        except KeyError as e: # Обробка помилки KeyError (наприклад, коли контакт не знайдено)
-            return str(e) if str(e) else "❌This contact does not exist"
-        except IndexError as e: # Обробка помилки IndexError (наприклад, коли недостатньо аргументів)
-             return str(e) if str(e) else "❌Please provide both name and phone number"
-        except Exception as e: # Загальна обробка інших винятків
+        except ValueError:
+            return  "❌Give me name and phone please"
+        except KeyError :
+            return "❌This contact does not exist"
+        except IndexError :
+             return ("❌ Enter user name")
+        except Exception as e: 
             return f"An error occurred: {e}" 
     return inner
 
@@ -24,23 +24,13 @@ def input_error(func):
 # Функція для додавання контакту до словника контактів
 @input_error
 def add_contact(args, contacts):
-    if len(args) != 2:  # Перевіряємо чи передано саме два аргументи
-        raise IndexError
-    name, phone = args # Розпаковуємо список args (ім'я та телефонний номер) на змінні name та phone
-  # Перевіряємо, що ім'я містить лише літери
-    if not name.isalpha():
-        raise ValueError("Name must be only letters")
-    # Перевіряємо, що номер телефону містить лише цифри
-    if not phone.isdigit():
-        raise ValueError("Phone must be only numbers")
+    name, phone = args
     contacts[name] = phone 
     return f" ✔ Contact '{name} {phone}' has been added to list"  
 
 #Функція для зміни номера телефону існуючого контакту
 @input_error
 def change_contact(args, contacts): 
-    if len(args) != 2: 
-        raise IndexError("Change command requires exactly two arguments: name and new phone")
     name, new_phone = args 
     if name not in contacts:
         raise KeyError
@@ -51,19 +41,14 @@ def change_contact(args, contacts):
 #Функція для показу номера телефону існуючого контакту
 @input_error
 def show_phone(args, contacts):
-    if len(args) != 1: # Перевіряємо чи передано саме один аргумент
-        raise ValueError("❌ 'phone' command must include exactly one argument: name")
     name = args[0] 
-    if name not in contacts:
-        raise KeyError(f"❌ Contact '{name}' not found")
-
     return f"✔ Contact '{name}' has phone number '{contacts[name]}'"
 
 #Функція для показу всіх контактів у словнику
 @input_error
 def show_all(contacts):
     if not contacts:
-        raise IndexError("❌ No contacts stored")
+        return "❌ No contacts stored"
     result_lines = ["All contacts:"]
     for name, phone in contacts.items():
         result_lines.append(f"{name}: {phone}")
